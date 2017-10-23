@@ -5,3 +5,11 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+# Downloading data for MSFT from alphavantage.co API
+msft_prices = HTTParty.get('https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=MSFT&apikey=demo')
+# Loop through each day and its prices
+msft_prices['Weekly Time Series'].each do |date_string, prices|
+  # Create row in our database for this day and its prices
+  StockPrice.create!(symbol: 'MSFT', date: date_string, open: prices['1. open'], high: prices['2. high'], low: prices['3. low'], close: prices['4. close'], volume: prices['5. volume'])
+end
